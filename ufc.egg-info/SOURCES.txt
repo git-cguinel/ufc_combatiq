@@ -1,0 +1,12 @@
+README.md
+setup.py
+combat_iq/__init__.py
+combat_iq/api/__init__.py
+combat_iq/api/api_file.py
+combat_iq/interface/__init__.py
+notebooks/__init__.py
+ufc.egg-info/PKG-INFO
+ufc.egg-info/SOURCES.txt
+ufc.egg-info/dependency_links.txt
+ufc.egg-info/requires.txt
+ufc.egg-info/top_level.txt

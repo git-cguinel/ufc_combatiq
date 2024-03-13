@@ -1,3 +1,7 @@
+reinstall_package:
+	@pip uninstall -y combat_iq || :
+	@pip install -e .
+
 build_container_local:
 	docker build --tag=$$IMAGE:dev .
 
@@ -15,10 +19,6 @@ create_artifacts_repo:
 # Step 3
 # build_for_production:
 # 	docker build -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
-
-### Step 3 (:warning: M1 SPECIFICALLY)
-# m1_build_image_production:
-# 	docker build --platform linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$ARTIFACTSREPO/$$IMAGE:prod .
 
 m2_build_image_production:
 	docker build --platform linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$ARTIFACTSREPO/$$IMAGE:prod .

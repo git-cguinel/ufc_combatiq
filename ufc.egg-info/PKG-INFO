@@ -1,0 +1,12 @@
+Metadata-Version: 2.1
+Name: ufc
+Version: 0.0.0
+Summary: Demo Day Project : UFC Combatiq
+Requires-Dist: fastapi
+Requires-Dist: uvicorn
+Requires-Dist: numpy==1.26.4
+Requires-Dist: pandas==2.2.1
+Requires-Dist: scikit-learn==1.3.1
+Requires-Dist: catboost==1.2.3
+Requires-Dist: docker
+Requires-Dist: python-dotenv
