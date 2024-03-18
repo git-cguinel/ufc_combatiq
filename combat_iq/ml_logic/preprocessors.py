@@ -18,9 +18,10 @@ def preprocessed_df(red_fighter, blue_fighter):
     fight_df = pd.DataFrame(data).T
     fight_df.columns = new_column_names
 
-    fight_df = fight_df[['B_total_rounds_fought', 'B_total_title_bouts', 'B_current_win_streak',
-       'B_current_lose_streak', 'B_longest_win_streak', 'B_wins', 'B_losses',
-       'B_draw', 'B_win_by_Decision_Majority', 'B_win_by_Decision_Split',
+    fight_df = fight_df[['R_fighter', 'B_fighter', 'B_total_rounds_fought',
+       'B_total_title_bouts', 'B_current_win_streak', 'B_current_lose_streak',
+       'B_longest_win_streak', 'B_wins', 'B_losses', 'B_draw',
+       'B_win_by_Decision_Majority', 'B_win_by_Decision_Split',
        'B_win_by_Decision_Unanimous', 'B_win_by_KO/TKO', 'B_win_by_Submission',
        'B_win_by_TKO_Doctor_Stoppage', 'R_total_rounds_fought',
        'R_total_title_bouts', 'R_current_win_streak', 'R_current_lose_streak',
@@ -30,3 +31,4 @@ def preprocessed_df(red_fighter, blue_fighter):
        'R_win_by_TKO_Doctor_Stoppage']]
 
     return fight_df
+
