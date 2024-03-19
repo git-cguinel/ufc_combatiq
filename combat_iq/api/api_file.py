@@ -21,7 +21,7 @@ def predict(red_fighter: str, blue_fighter: str):
     fight_data = preprocessed_df(red_fighter, blue_fighter)
 
     # importing the model
-    with open('models/of_model3_acc079468.pkl', 'rb') as file:
+    with open('../models/of_model3_acc079468.pkl', 'rb') as file:
         model = pickle.load(file)
 
     # predicting the outcome of the fight
