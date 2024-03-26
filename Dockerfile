@@ -1,10 +1,11 @@
 FROM python:3.8.12-slim
 
 COPY combat_iq /combat_iq
+COPY models /models
 COPY requirements.txt /requirements.txt
 
 RUN pip install --upgrade pip
-RUN pip install -e .
+RUN pip install -r requirements.txt
 
 # RUN CONTAINER LOCALLY
 CMD uvicorn combat_iq.api.api_file:app --host 0.0.0.0
