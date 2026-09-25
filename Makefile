@@ -1,6 +1,20 @@
+.PHONY: install test lint serve reinstall_package
+
+install:
+	python -m pip install -e ".[dev]"
+
+test:
+	python -m pytest
+
+lint:
+	ruff check src tests
+	ruff format --check src tests
+
+serve:
+	uvicorn combat_iq.api.app:app --reload
+
 reinstall_package:
-	@pip uninstall -y combat_iq || :
-	@pip install -e .
+	python -m pip install -e ".[dev]"
 
 build_container_local:
 	docker build --tag=$$IMAGE:dev .
@@ -16,15 +30,15 @@ allow_docker_push:
 create_artifacts_repo:
 	gcloud artifacts repositories create $$ARTIFACTSREPO --repository-format=docker --location=$$GCP_REGION --description="Repository for storing the docker container"
 
-Step 3
+# Step 3
 build_for_production:
 	docker build -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
 
 m2_build_image_production:
-	docker build --platform linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$ARTIFACTSREPO/$$IMAGE:prod .
+	docker build --platform linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
 
 # m2_build_image_production:
-# 	docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$ARTIFACTSREPO/$$IMAGE:prod .
+# 	docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
 
 # Step 4
 push_image_production:

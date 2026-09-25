@@ -1,0 +1,62 @@
+[
+  {
+    "red": "Gustavo Lopez",
+    "blue": "Mark Kerr",
+    "label": 1,
+    "confidence": 0.634
+  },
+  {
+    "red": "Roman Dolidze",
+    "blue": "Enson Inoue",
+    "label": 1,
+    "confidence": 0.674
+  },
+  {
+    "red": "Harry Hunsucker",
+    "blue": "Jack Nilson",
+    "label": 1,
+    "confidence": 0.726
+  },
+  {
+    "red": "Montserrat Conejo",
+    "blue": "Yoshiki Takahashi",
+    "label": 1,
+    "confidence": 0.726
+  },
+  {
+    "red": "Macy Chiasson",
+    "blue": "Geza Kalman",
+    "label": 1,
+    "confidence": 0.786
+  },
+  {
+    "red": "Grant Dawson",
+    "blue": "Rafael Carino",
+    "label": 1,
+    "confidence": 0.931
+  },
+  {
+    "red": "Max Griffin",
+    "blue": "Mark Schultz",
+    "label": 0,
+    "confidence": 0.619
+  },
+  {
+    "red": "Kevin Holland",
+    "blue": "Scott Bessac",
+    "label": 1,
+    "confidence": 0.889
+  },
+  {
+    "red": "Jesse Strader",
+    "blue": "Jon Hess",
+    "label": 1,
+    "confidence": 0.726
+  },
+  {
+    "red": "JP Buys",
+    "blue": "Frank Hamaker",
+    "label": 1,
+    "confidence": 0.726
+  }
+]
