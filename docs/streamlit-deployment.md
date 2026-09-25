@@ -29,7 +29,7 @@ Reference: https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-you
 Title: Combat IQ — an interactive machine-learning demo
 
 Description: Explore a historical UFC matchup, compare fighters’ records, and see
-a CatBoost model’s pick and uncalibrated confidence score. A team project
+a CatBoost model’s pick and uncalibrated confidence score. A personal project
 connecting data preparation, machine learning, an API, and an interactive application,
 with explicit model limitations and validation status.
 Based on historical data through March 2021; an educational demo, not live fight odds.

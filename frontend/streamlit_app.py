@@ -42,10 +42,12 @@ st.html(
 red_col, blue_col = st.columns(2, gap="large")
 with red_col:
     st.html('<div class="corner red">RED CORNER</div>')
-    red = st.selectbox("Red corner fighter", names, index=names.index("Max Griffin"), key="red")
+    red = st.selectbox("Red corner fighter", names, index=names.index("Conor McGregor"), key="red")
 with blue_col:
     st.html('<div class="corner blue">BLUE CORNER</div>')
-    blue = st.selectbox("Blue corner fighter", names, index=names.index("Mark Schultz"), key="blue")
+    blue = st.selectbox(
+        "Blue corner fighter", names, index=names.index("Khabib Nurmagomedov"), key="blue"
+    )
 
 
 def fighter_card(name: str, color: str) -> None:
@@ -137,7 +139,7 @@ future-information leakage, or established performance on later, unseen fights.
 No validated accuracy score is claimed.
 """)
 with st.expander("About the project"):
-    st.markdown("""**Combat IQ** is a team machine-learning project presented by **Clément Guinel**.
+    st.markdown("""**Combat IQ** is a personal machine-learning project by **Clément Guinel**.
 It connects historical fight data, feature preparation, model inference, an API,
 and this interactive demo.
 

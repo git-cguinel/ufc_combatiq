@@ -10,7 +10,10 @@ APP = Path(__file__).resolve().parents[1] / "frontend/streamlit_app.py"
 def test_blue_winner_and_stale_result():
     app = AppTest.from_file(str(APP), default_timeout=30).run()
     assert not app.exception
-    assert app.selectbox[0].value == "Max Griffin"
+    assert app.selectbox[0].value == "Conor McGregor"
+    assert app.selectbox[1].value == "Khabib Nurmagomedov"
+    app.selectbox[0].select("Max Griffin")
+    app.selectbox[1].select("Mark Schultz").run()
     app.button[0].click().run()
     assert not app.exception
     result = app.session_state["result"]["prediction"]

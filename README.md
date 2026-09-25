@@ -4,7 +4,7 @@
 
 An interactive portfolio demo of a historical UFC classification model. The app
 shows a model pick and an uncalibrated confidence score, with explicit limitations.
-This is an independent educational team project, not affiliated with UFC.
+This is an independent educational personal project, not affiliated with UFC.
 
 ## Run
 
