@@ -1,48 +1,17 @@
-.PHONY: install test lint serve reinstall_package
+.PHONY: install test lint serve frontend
 
 install:
-	python -m pip install -e ".[dev]"
+	python -m pip install -e ".[dev]" -r frontend/requirements.txt
 
 test:
 	python -m pytest
 
 lint:
-	ruff check src tests
-	ruff format --check src tests
+	ruff check src tests frontend
+	ruff format --check src tests frontend
 
 serve:
 	uvicorn combat_iq.api.app:app --reload
 
-reinstall_package:
-	python -m pip install -e ".[dev]"
-
-build_container_local:
-	docker build --tag=$$IMAGE:dev .
-
-run_container_local:
-	docker run -it -e PORT=8000 -p 8000:8000 $$IMAGE:dev
-
-# Step 1
-allow_docker_push:
-	gcloud auth configure-docker $$GCP_REGION-docker.pkg.dev
-
-# Step 2
-create_artifacts_repo:
-	gcloud artifacts repositories create $$ARTIFACTSREPO --repository-format=docker --location=$$GCP_REGION --description="Repository for storing the docker container"
-
-# Step 3
-build_for_production:
-	docker build -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
-
-m2_build_image_production:
-	docker build --platform linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
-
-# m2_build_image_production:
-# 	docker buildx build --push --platform linux/arm/v7,linux/arm64/v8,linux/amd64 -t $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod .
-
-# Step 4
-push_image_production:
-	docker push $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod
-
-deploy_to_cloud_run:
-	gcloud run deploy --image $$GCP_REGION-docker.pkg.dev/$$GCP_PROJECT/$$ARTIFACTSREPO/$$IMAGE:prod --memory $$MEMORY --region $$GCP_REGION
+frontend:
+	streamlit run frontend/streamlit_app.py

@@ -17,7 +17,3 @@ def fighters_path() -> Path:
 
 def model_path() -> Path:
     return artifact_path("COMBAT_IQ_MODEL_PATH", "models/of_model3_acc079468.pkl")
-
-
-def training_path() -> Path:
-    return artifact_path("COMBAT_IQ_TRAINING_PATH", "data/raw/fights.csv")

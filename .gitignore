@@ -19,3 +19,5 @@ models/trained_model.pkl
 .refactor-backup/
 
 .streamlit/secrets.toml
+
+.local-archive/

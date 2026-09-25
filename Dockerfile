@@ -1,6 +1,6 @@
 FROM python:3.10-slim
 WORKDIR /app
-COPY pyproject.toml setup.py requirements.txt README.md ./
+COPY pyproject.toml requirements.txt README.md ./
 COPY src ./src
 RUN pip install --no-cache-dir .
 COPY data/processed ./data/processed

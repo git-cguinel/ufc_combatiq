@@ -8,3 +8,6 @@ archive
 tests
 build
 *.egg-info
+
+.local-archive
+.refactor-backup

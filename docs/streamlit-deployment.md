@@ -7,7 +7,7 @@ The demo is built locally. It has not been published or added to LinkedIn.
 1. Publish the intended code changes to the GitHub repository. Review the tracked
    `.env` and `.envrc` entries before publishing; they are legacy files and must not
    be included in a new deployment snapshot. Do not publish `.refactor-backup`,
-   local environments, or credentials.
+   local environments, `.local-archive`, or credentials.
 2. Sign in at https://share.streamlit.io/ with the GitHub-connected account.
 3. Create an app using `git-cguinel/ufc_combatiq`, the published branch, and
    `frontend/streamlit_app.py` as the entry point.
@@ -15,7 +15,7 @@ The demo is built locally. It has not been published or added to LinkedIn.
 5. Deploy. Streamlit supplies the final HTTPS link. No API service or API key is needed.
 
 Required files: `frontend/`, `.streamlit/config.toml`, `src/`, `pyproject.toml`,
-`setup.py`, `requirements.txt`, `README.md`, `data/processed/fighters.csv`, and
+`requirements.txt`, `README.md`, `data/processed/fighters.csv`, and
 `models/of_model3_acc079468.pkl`. The requirements file beside the entry point
 installs the root package in editable mode so artifact paths resolve to the checkout.
 

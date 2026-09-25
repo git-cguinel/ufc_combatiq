@@ -1,5 +1,4 @@
 import json
-import pickle
 from pathlib import Path
 
 import numpy as np
@@ -12,8 +11,6 @@ from combat_iq.api.app import app
 from combat_iq.config import fighters_path
 from combat_iq.data import _read_fighters, load_fighters
 from combat_iq.features import FEATURE_COLUMNS, InvalidMatchup, build_features
-from combat_iq.ml_logic.preprocessors import preprocessed_df
-from combat_iq.training import train_pipeline
 
 BASELINES = json.loads((Path(__file__).parent / "fixtures/predictions.json").read_text())
 
@@ -42,7 +39,7 @@ def test_feature_order_values_and_dtype_match_original():
     original = pd.DataFrame(list(red_row.iloc[0]) + list(blue_row.iloc[0])).T
     original.columns = list(red_row.columns) + list(blue_row.columns)
     original = original.loc[:, FEATURE_COLUMNS]
-    pd.testing.assert_frame_equal(preprocessed_df(red, blue), original)
+    pd.testing.assert_frame_equal(build_features(load_fighters(), red, blue), original)
 
 
 @pytest.mark.parametrize(
@@ -51,7 +48,7 @@ def test_feature_order_values_and_dtype_match_original():
 )
 def test_invalid_fighters(red, blue):
     with pytest.raises(InvalidMatchup):
-        preprocessed_df(red, blue)
+        build_features(load_fighters(), red, blue)
 
 
 def test_paths_do_not_depend_on_working_directory(monkeypatch, tmp_path):
@@ -123,23 +120,6 @@ def test_missing_artifact_returns_service_unavailable(monkeypatch, tmp_path):
     )
     assert response.status_code == 503
     assert str(tmp_path) not in response.text
-
-
-def test_small_training_round_trip(tmp_path, monkeypatch):
-    from combat_iq.config import training_path
-    from combat_iq.ml_logic.model import train_pipline
-
-    assert train_pipline is train_pipeline
-    data = pd.read_csv(training_path()).head(100)
-    destination = tmp_path / "model.pkl"
-    model = train_pipeline(data, output_path=destination, iterations=2, cv_folds=2)
-    with destination.open("rb") as stream:
-        restored = pickle.load(stream)
-    features = build_features(load_fighters(), BASELINES[0]["red"], BASELINES[0]["blue"])
-    np.testing.assert_array_equal(model.predict(features), restored.predict(features))
-    monkeypatch.setenv("COMBAT_IQ_MODEL_PATH", str(destination))
-    result = prediction.predict(BASELINES[0]["red"], BASELINES[0]["blue"])
-    assert 0 <= result["confidence_rate"] <= 1
 
 
 @pytest.mark.parametrize("label,winner,probability", [(1, "Red", 0.35), (0, "Blue", 0.65)])

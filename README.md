@@ -1,134 +1,83 @@
-# UFC Combat IQ
+# Combat IQ
 
-A FastAPI service that predicts a UFC fight outcome from two fighters' historical statistics.
-The bundled data is historical (through March 2021); predictions are not current fight advice.
+An interactive portfolio demo of a historical UFC classification model. The app
+shows a model pick and an uncalibrated confidence score, with explicit limitations.
+This is an independent educational team project, not affiliated with UFC.
 
-## Run locally
+## Run
 
-Use Python 3.10 or 3.11. The ML dependency versions are pinned for the bundled model;
-its scikit-learn serialization requires **1.4.1.post1**.
+Use Python 3.10 or 3.11:
 
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-python -m pip install -e '.[dev]'
-uvicorn combat_iq.api.app:app --reload
+python -m pip install -e '.[dev]' -r frontend/requirements.txt
+streamlit run frontend/streamlit_app.py
 ```
 
-Open `http://127.0.0.1:8000/docs` for the API documentation. Example:
+Open http://localhost:8501. No separate API server is needed for Streamlit.
+To run the API separately: `uvicorn combat_iq.api.app:app --reload`.
+Interactive API documentation is at http://localhost:8000/docs.
 
-```sh
-curl --get http://127.0.0.1:8000/predict \
-  --data-urlencode 'red_fighter=Gustavo Lopez' \
-  --data-urlencode 'blue_fighter=Mark Kerr'
-```
-
-The response provides `model_pick`, `model_confidence`, and `predicted_outcome`.
-The target distinguishes `red_win` from `non_red_win`, which includes draws. A
-non-red prediction is displayed as a blue fighter pick, not a proven blue win.
-Confidence is the uncalibrated score for that target class, rounded to three decimals.
-
-Legacy `winner`, `win_probability`, `fight_outcome`, and `confidence_rate` fields
-remain for compatibility and are deprecated in the API schema. In particular,
-`win_probability` is a historical misnomer, not a calibrated probability of winning.
-
-Portfolio validation: regression tests verify software consistency, not model
-accuracy. Original evaluation, pre-fight feature timing, and later unseen-fight
-performance have not been independently audited in this version. No validated
-accuracy or betting performance is claimed.
-
-Unknown, empty, or identical fighters return HTTP 422. Missing artifacts return HTTP 503.
-
-## Structure
+## Production structure
 
 ```text
-src/combat_iq/
-  api/app.py          FastAPI routes and response schema
-  config.py           Paths and environment overrides
-  data.py             Validated fighter data and cache
-  features.py         Shared feature names, order, and matchup validation
-  prediction.py       Saved-model loading and inference
-  training.py         Explicit model training and evaluation
-  ml_logic/           Compatibility wrappers for existing notebooks
-data/
-  processed/fighters.csv
-  raw/fights.csv
-models/               Original fitted models; unchanged
-notebooks/            Research and exploration
-archive/legacy/       Historical alternate implementations and unused stylesheet
-tests/               Regression, API, cache, and training tests
+frontend/                 Streamlit interface, styles, deployment dependencies
+src/combat_iq/            Inference, feature preparation, artifact cache, API
+models/                   The one model used by the app
+data/processed/           Fighter statistics used by inference
+tests/                    Regression and app behavior checks
+.streamlit/config.toml    UI theme
+docs/                     Deployment instructions
 ```
 
-The root `data.csv` is a compatibility symlink. Existing `raw_data/` files are left
-untouched for research notebooks. Some historical notebooks need external datasets;
-notebooks are preserved as research records, not production entry points.
+Research notebooks, training code, alternative models, duplicate datasets and
+unused images were removed from the serving checkout. They remain in Git history
+and in the ignored local `.local-archive/production-cleanup/` folder. Its manifest
+records their original paths and SHA-256 checksums; move files back to those paths
+to restore them. No training runs occur during app startup or deployment.
 
-## Configuration
+## Model and interpretation
 
-Defaults resolve relative to the source checkout, independent of the launch directory.
-For a wheel installation, provide absolute paths to separately deployed artifacts:
+The saved CatBoost classifier has 2,500 trees, depth 5, and learning rate 0.04.
+Inputs comprise two fighter names and 14 historical statistics per corner. The
+fighter archive ends in March 2021; it does not reflect current records or odds.
 
-| Variable | Default in checkout |
-| --- | --- |
-| `COMBAT_IQ_FIGHTERS_PATH` | `data/processed/fighters.csv` |
-| `COMBAT_IQ_MODEL_PATH` | `models/of_model3_acc079468.pkl` |
-| `COMBAT_IQ_TRAINING_PATH` | `data/raw/fights.csv` |
+The original target distinguishes **red wins** from **non-red outcomes**, including
+draws. The latter is presented as a blue-corner pick with an explicit explanation.
+Confidence refers to that predicted class, not a calibrated chance of winning.
+Feature timing, original evaluation and performance on later unseen fights have
+not been independently audited in this portfolio version. No validated accuracy
+score is claimed; the number in the historical artifact filename is not evidence.
 
-Fighter data and models are cached by path, modification time, and size. Replacing an
-artifact refreshes the cache. Only use trusted pickle models. Python wheels contain
-code; datasets and fitted models are deployed separately.
+## API contract
 
-## Train a new model
+`GET /predict?red_fighter=Max%20Griffin&blue_fighter=Mark%20Schultz`
+returns `model_pick`, `model_confidence` (0–1), and `predicted_outcome`
+(`red_win` or `non_red_win`). Unknown, blank or identical fighters return HTTP 422;
+missing artifacts return HTTP 503.
 
-```python
-from combat_iq.training import train_pipeline
+Deprecated `winner`, `win_probability`, `fight_outcome`, and `confidence_rate`
+fields remain for existing clients. `win_probability` is a historical misnomer.
+The old Uvicorn entry point `combat_iq.api.api_file:app` still works.
 
-model = train_pipeline()
-```
+## Artifact configuration
 
-Training uses the shared 30-column feature schema, a stratified holdout, reproducible
-splits, and five-fold cross-validation. CatBoost handles numeric zeros and missing
-values directly. Results are logged using Python logging. Training saves to
-`models/trained_model.pkl`, leaving the historical model untouched. Set
-`COMBAT_IQ_MODEL_PATH` to the new file to use it. The new workflow corrects the old
-training implementation; it does not claim to reproduce its historical accuracy.
+Defaults resolve from the checkout, independently of the launch directory.
+Override with absolute `COMBAT_IQ_FIGHTERS_PATH` or `COMBAT_IQ_MODEL_PATH` values.
+Wheels contain code; data/model artifacts are deployed separately. Only load
+trusted pickle files. ML versions are pinned to the saved model's environment.
 
-Existing imports of `preprocessed_df`, `get_data`, `predict`, and the misspelled
-`train_pipline` continue to work through `combat_iq.ml_logic`. The old Uvicorn entry
-point `combat_iq.api.api_file:app` is also retained.
-
-## Checks
+## Validation and deployment
 
 ```sh
 make test
 make lint
-python -m pip wheel --no-deps . -w dist
 ```
 
-Regression fixtures capture ten predictions from the original preprocessing and
-saved model, covering both labels. Tests also exercise feature order/dtypes, path
-independence, cache isolation/refresh, HTTP responses, and a small real training run.
+Tests check prediction consistency, class-score mapping, input validation, cache
+behavior and frontend interaction. These are software checks, not accuracy claims.
 
-## Docker
-
-```sh
-docker build -t ufc-combat-iq .
-docker run --rm -p 8000:8000 ufc-combat-iq
-```
-
-The image contains the default fighter data and historical model. `PORT` defaults to
-8000. Cloud deployment targets remain in the Makefile and require your existing
-cloud environment settings. No deployment is performed by installation or testing.
-
-See [the refactor record](docs/refactor.md) for migration details and local rollback.
-
-## Streamlit demo
-
-```sh
-source .venv/bin/activate
-python -m pip install -r frontend/requirements.txt
-streamlit run frontend/streamlit_app.py
-```
-
-Open http://localhost:8501. The frontend calls the cached prediction service directly;
-no separate API server is needed. See [deployment](docs/streamlit-deployment.md).
+The Dockerfile serves the API with its production artifacts; `PORT` defaults to
+8000. Streamlit deployment uses `frontend/streamlit_app.py` and Python 3.11.
+See [deployment](docs/streamlit-deployment.md).
