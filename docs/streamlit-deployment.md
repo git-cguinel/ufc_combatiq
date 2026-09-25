@@ -1,12 +1,15 @@
 # Streamlit deployment and LinkedIn handoff
 
-The demo is built locally. It has not been published or added to LinkedIn.
+Deployed on 25 September 2026: https://combat-iq-clement-guinel.streamlit.app/
+
+Runtime: Python 3.11. Verified the hosted Max Griffin / Mark Schultz matchup:
+Mark Schultz, 61.9% model confidence, with the target-class caveat displayed.
+The LinkedIn profile has not been changed.
 
 ## Streamlit Community Cloud
 
-1. Publish the intended code changes to the GitHub repository. Review the tracked
-   `.env` and `.envrc` entries before publishing; they are legacy files and must not
-   be included in a new deployment snapshot. Do not publish `.refactor-backup`,
+1. Publish intended code changes to the GitHub repository. `.env` and `.envrc`
+   are excluded from the current tracked files. Do not publish `.refactor-backup`,
    local environments, `.local-archive`, or credentials.
 2. Sign in at https://share.streamlit.io/ with the GitHub-connected account.
 3. Create an app using `git-cguinel/ufc_combatiq`, the published branch, and
